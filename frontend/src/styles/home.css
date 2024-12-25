@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     background-color: hsl(0,0%,100%);
-    height: 100%;
 }
 
 .header {
@@ -10,9 +9,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 1rem 3rem;
+    padding: .3rem 3rem;
     align-items: center;
     border-bottom: .5px solid hsl(0, 0%, 80%);
+}
+
+.header-logo{
+    display: flex;
+    align-items: center;
+}
+
+.smalllogo {
+    position: relative;
+    border-radius: 50%;
+    height: 3rem;
+    margin: 0 0.5rem;
 }
 
 .header-title {
@@ -22,7 +33,7 @@
     color: inherit;
 }
 
-.btn {
+.home-btn {
     padding: .5rem;
     text-decoration: none;
     font-weight: 500;
@@ -32,6 +43,48 @@
     transition: all .3s;
 }
 
-.btn:hover {
+.home-btn:hover {
     background-color: hsl(50, 100%, 50%);
+}
+
+.section-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    box-sizing: border-box;
+    margin: auto;
+}
+
+.home-left-sec {
+    display: flex;
+    flex:1;
+    justify-content: right;
+    width: 50%;
+    max-width: 30rem;
+    border-radius: .5rem 0 0 .5rem;
+    box-sizing: border-box;
+  }
+  
+  .home-right-sec {
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    width: 50%;
+    max-width: 35rem;
+    border-radius: 0 .5rem .5rem 0;
+    box-sizing: border-box;
+    padding: 2.5rem;
+  }
+
+.lock-image{
+    width:100%;
+    border-radius: 1rem;
+}
+
+.home-sec-text {
+    width: 100%;
+    font-size: 3rem;
+    font-weight: 200;
 }

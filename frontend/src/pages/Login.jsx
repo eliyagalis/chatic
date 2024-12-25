@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import LogoImg from '../assets/logo.png';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import { Link } from 'react-router';
 
 const Login = () => {
   
@@ -17,15 +18,16 @@ const Login = () => {
       <Header />
       <div className='log'>
             <div className='log-container'>
-                <div className='log-left-sec'>
+                <div className='left-sec'>
                     <div className='log-image'>
                         <img className='log-img' src={LogoImg}/>
                     </div>
                 </div>
-                <div className='log-right-sec'>
+                <div className='right-sec'>
                     <div className='form-group'>
                         <form onSubmit={formSubmit}>
                     <div className='title'>Log In</div>
+                    <br/>
                     <input className='log-field' id="email" type="text" value={inputData.email} placeholder='Email'
                     onChange={(e)=>setInputData({...inputData, email: e.target.value})}/>
                     <br/>
@@ -37,9 +39,10 @@ const Login = () => {
                     <button className='log-field btn gold'>Continue</button>
                     <br/>
                     <div className='line'/>
-                    <div>Don't have an account?</div>
-                <button className='log-field btn'>Sign up</button>
-                </form>
+                    <div className='title'>Don't have an account?</div>
+                    <br/>
+                    <Link className='home-btn' to="/signup">Sign Up</Link>
+                    </form>
                     </div>
                 </div>
             

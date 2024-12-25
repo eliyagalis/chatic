@@ -3,6 +3,7 @@ import LogoImg from '../assets/logo.png';
 import '../styles/login.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Link } from 'react-router';
 
 const Signup = () => {
     const [inputData, setInputData] = useState({ firstname: "", lastname: "", email: "", password: "", });
@@ -17,15 +18,16 @@ const Signup = () => {
       <Header />
       <div className='log'>
           <div className='log-container'>
-            <div className='log-left-sec'>
+            <div className='left-sec'>
                 <div className='log-image'>
                     <img className='log-img' src={LogoImg}/>
                 </div>
             </div>
-            <div className='log-right-sec'>
+            <div className='right-sec'>
                 <div className='form-group'>
                     <form onSubmit={formSubmit}>
                 <div className='title'>Sign-up</div>
+                <br/>
                 <input className='log-field' id="firstname" type="text" value={inputData.firstname} placeholder='First name' onChange={(e)=>setInputData({...inputData, firstname: e.target.value})}/>
                 <br/>
 
@@ -45,7 +47,8 @@ const Signup = () => {
                 <br/>
                 <div className='line'/>
                 <div className='title'>Have an account?</div>
-                <button className='log-field btn'>Log in</button>
+                <br/>
+                <Link className='home-btn' to="/login">Login</Link>
             </form>
                 </div>
             </div>
