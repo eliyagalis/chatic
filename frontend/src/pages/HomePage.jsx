@@ -24,8 +24,8 @@ const HomePage = () => {
               <br/>
               With <b>chatic</b> it's safe!
             </div>
-              <p>Experience seamless conversations with Chatic, 
-                the chat app designed with your security in mind.
+              <p className='home-sec-p'>Experience seamless conversations with 
+                a chat app designed with your security in mind.
                 Chatic ensures your messages remain private, always. 
                 Share texts, files, and connect without worry, 
                 knowing your communication is safeguarded with 
