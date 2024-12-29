@@ -21,7 +21,7 @@ const Login = () => {
     if (!inputData.email || !inputData.password)
       alert("invalid email or password");
     axios
-      .post("/users/singup", inputData)
+      .post("/users/login", inputData)
       .then((res) => {
         setUserData(res.data);
         navigate("/chat");

@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router";
 import { useUserData } from "../context/userContext";
+import axios from "axios";
 
 const Signup = () => {
   const [inputData, setInputData] = useState({
@@ -18,10 +19,10 @@ const Signup = () => {
 
   const formSubmit = (e) => {
     e.preventDefault();
-    if (!inputData.email || !inputData.password)
+    if (!inputData.email ||!inputData.username || !inputData.password)
       alert("invalid email or password");
     axios
-      .post("/users/singup", inputData)
+      .post("/users/signup", inputData)
       .then((res) => {
         setUserData(res.data);
         navigate('/chat');
