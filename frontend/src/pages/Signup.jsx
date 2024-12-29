@@ -15,19 +15,22 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
-  const {setUserData} = useUserData();
+  const { setUserData } = useUserData();
 
   const formSubmit = (e) => {
     e.preventDefault();
-    if (!inputData.email ||!inputData.username || !inputData.password)
+    if (!inputData.email || !inputData.username || !inputData.password)
       alert("invalid email or password");
     axios
-      .post("/users/signup", inputData)
-      .then((res) => {
-        setUserData(res.data);
-        navigate('/chat');
+      .post("http://localhost:8080/api/v1/users/signup", inputData, {
+        withCredentials: true
       })
-      .catch((error) => console.log(error));
+      .then((res) => {
+        console.log(res.data);
+        setUserData(res.data.user);
+        navigate("/chat");
+      })
+      .catch((error) => console.error(error));
   };
 
   return (

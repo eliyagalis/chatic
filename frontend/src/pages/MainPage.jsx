@@ -18,16 +18,19 @@ const MainPage = () => {
 
   useEffect(() => {
     axios
-  .post("http://localhost:8080/api/v1/users/verifyToken", null, {
-    withCredentials: true, // Ensures cookies are sent
-  })
-  .then((res) => {
-    console.log("Token is valid:", res.data);
-  })
-  .catch((error) => {
-    console.error("Token verification failed:", error.response?.data || error);
-    navigate('/');
-  })
+      .post("http://localhost:8080/api/v1/users/verifyToken", null, {
+        withCredentials: true
+      })
+      .then((res) => {
+        console.log("Token is valid:", res.data);
+      })
+      .catch((error) => {
+        console.error(
+          "Token verification failed:",
+          error.response?.data || error
+        );
+        navigate("/");
+      });
 
     axios
       .get("/users")

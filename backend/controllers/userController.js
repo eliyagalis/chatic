@@ -39,24 +39,17 @@ export const signup = async (req, res) => {
     });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_KEY, {
-      expiresIn: "1h",
-      issuer: "http://localhost:8080",
-    });
-
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 3600000,
-      secure: false,
-      path: '/'
-    });
-
-    res.cookie('testCookie', 'This is a test cookie!', {
-        httpOnly: true, // Prevents access to the cookie via JavaScript
-        secure: false,  // For local development, set to false (for production, set to true if using HTTPS)
+        expiresIn: "1h",
+        issuer: "http://localhost:8080",
+      });
+  
+      res.cookie("jwt", token, {
+        httpOnly: true,
         maxAge: 3600000, // 1 hour
-        sameSite: 'None', // Allows cross-origin cookies
-        path: '/'
-    });
+        secure: false, // Set to true in production if using HTTPS
+        path: "/",
+        sameSite: "lax",
+      });  
 
     res.status(201).json({ message: "User was created successfully" , newUser});
   } catch (error) {
@@ -82,15 +75,17 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {
-      expiresIn: "1d",
-      issuer: "http://localhost:8080",
-    });
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: false,
-      maxAge: 3600000,
-      path: '/'
-    });
+        expiresIn: "1d",
+        issuer: "http://localhost:8080",
+      });
+  
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 86400000, // 1 day
+        path: "/",
+        sameSite: "lax",
+      });
 
     res.status(200).json({ message: "user logged-in successfully" });
   } catch (error) {
@@ -126,17 +121,18 @@ export const editUser = async (req, res) => {
 };
 
 export const verifyToken = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) {
-    return res.status(401).json({ error: "No token provided" });
-  }
-
-  const isTokenVerified = jwt.verify(token,process.env.SECRET_KEY,{issuer: 'http://localhost:8080'});
-
-    if (!isTokenVerified) {
-        res.status(401).json({error: 'Invalid Token'});
+    const token = req.cookies.jwt;
+  
+    if (!token) {
+      return res.status(401).json({ error: "No token provided" });
     }
-
-    res.send();
-};
+  
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_KEY, {
+        issuer: "http://localhost:8080",
+      });
+      res.status(200).json({ message: "Token is valid", userId: decoded.id });
+    } catch (err) {
+      res.status(401).json({ error: "Invalid token" });
+    }
+  };
