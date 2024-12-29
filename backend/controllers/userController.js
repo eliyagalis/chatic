@@ -59,7 +59,7 @@ export const login = async (req, res)=> {
             return res.status(400).json({error: "wrong password"});
         }
 
-        const token = jwt.sign({username}, process.env.JWT_KEY, {expiresIn: '3m', issuer: 'http://localhost:8080'});
+        const token = jwt.sign({username}, process.env.JWT_KEY, {expiresIn: '1h', issuer: 'http://localhost:8080'});
         res.cookie('jwt', token, { httpOnly: true, maxAge: 900000 });
 
         res.status(200).json({message: "user logged-in successfully"});

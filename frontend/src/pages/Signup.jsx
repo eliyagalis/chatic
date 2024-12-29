@@ -4,6 +4,7 @@ import "../styles/login.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router";
+import { useUserData } from "../context/userContext";
 
 const Signup = () => {
   const [inputData, setInputData] = useState({
@@ -13,6 +14,7 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
+  const {setUserData} = useUserData();
 
   const formSubmit = (e) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const Signup = () => {
     axios
       .post("/users/singup", inputData)
       .then((res) => {
-        console.log(res.data);
+        setUserData(res.data);
         navigate('/chat');
       })
       .catch((error) => console.log(error));

@@ -9,17 +9,12 @@ import axios from 'axios';
 
 
 const MainPage = () => {
-
-  // const users = [{_id: 1, firstname: "Eliya", lastname: "Galis"},{_id: 2, firstname: "Levi", lastname: "Galis"},
-  //   {_id: 3, firstname: "Yakov", lastname: "Galis"},{_id: 4, firstname: "Eva", lastname: "Galis"},
-  // ];
-
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState({_id: "", content: ""});
   
   const [messages, setMessages] = useState([]);
-
+  const [message, setMessage] = useState({_id: "", content: ""});
   const [isAuth, setIsAuth] = useState(false);
+
 
   
 
