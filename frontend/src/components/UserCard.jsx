@@ -1,7 +1,7 @@
 import React from 'react'
 import profile from '../assets/profile.png';
 
-const UserCard = ({_id, avatar = profile, firstname, lastname, openChatHandler}) => {
+const UserCard = ({_id, avatar = profile, username, openChatHandler}) => {
     
     const clickCardHandler = (e) => {
         e.preventDefault();
@@ -11,7 +11,7 @@ const UserCard = ({_id, avatar = profile, firstname, lastname, openChatHandler})
   return (
     <div className='card' onClick={clickCardHandler}>
         <img src={avatar} className='avatar'/>
-        <div>{firstname} {lastname}</div>
+        <div>{username}</div>
     </div>
   )
 }

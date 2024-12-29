@@ -26,6 +26,11 @@ export const signup = async (req, res) => {
             return res.status(400).json({message: "invalid credentials"});
         }
 
+        const user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({error: "email is in use"});
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({ username, email, password: hashedPassword });
@@ -39,13 +44,13 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res)=> {
     try {
-        const {username, password} = req.body;
+        const {email, password} = req.body;
 
-        if (!username) {
+        if (!email) {
             return res.status(400).json({error: "username is required"});
         }
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({error: "user not found"});
         }

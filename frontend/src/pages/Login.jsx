@@ -3,15 +3,25 @@ import LogoImg from '../assets/logo.png';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { Link } from 'react-router';
+import Message from '../components/Message';
+import axios from 'axios';
 
 const Login = () => {
   
   const [inputData, setInputData] = useState({ email: "", password: "", });
       
-      const formSubmit = (e)=> {
-          e.preventDefault();
-          console.log(inputData);
-      }
+    const formSubmit = (e)=> {
+        e.preventDefault();
+        if (!inputData.email || !inputData.password) 
+            alert('invalid email or password');
+        console.log(inputData);
+        axios.post('/users/login', inputData)
+            .then((res)=> {
+                console.log('success');
+                console.log(res.data);
+            })
+            .catch((error)=> console.log(error))
+    }
 
   return (
     <div className='page'>

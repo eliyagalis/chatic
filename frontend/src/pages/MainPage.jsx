@@ -10,34 +10,31 @@ import axios from 'axios';
 
 const MainPage = () => {
 
-  const users = [{_id: 1, firstname: "Eliya", lastname: "Galis"},{_id: 2, firstname: "Levi", lastname: "Galis"},
-    {_id: 3, firstname: "Yakov", lastname: "Galis"},{_id: 4, firstname: "Eva", lastname: "Galis"},
-  ];
+  // const users = [{_id: 1, firstname: "Eliya", lastname: "Galis"},{_id: 2, firstname: "Levi", lastname: "Galis"},
+  //   {_id: 3, firstname: "Yakov", lastname: "Galis"},{_id: 4, firstname: "Eva", lastname: "Galis"},
+  // ];
 
+  const [users, setUsers] = useState([]);
   const [message, setMessage] = useState({_id: "", content: ""});
-
-  const [messages, setMessages] = useState([{_id: 1, content: "new message", time: "10:35"},
-    {_id: 2, content: "new message", time: "10:35"},{_id: 3, content: "new message", time: "10:35"},
-    {_id: 4, content: "new message", time: "10:35"},{_id: 5, content: "new message", time: "10:35"}
-  ]);
   
+  const [messages, setMessages] = useState([]);
+
   const [isAuth, setIsAuth] = useState(false);
 
   
 
-  // useEffect(() => {
-  //     axios .post('/users/verifyToken',null,{withCredentials: true})
-  //           .then((res)=> {
-  //             console.log('success');
-  //             setIsAuth(true);
-  //             }).catch((error)=>console.log(error))
-  //             .finally(()=> {
-  //               isAuth? console.log('yay'): Navigate('/')});
-  // }, [])
+  useEffect(() => {
+    axios.get('/users').then((res) => setUsers(res.data)).catch((error)=> console.log(error));  
+    
+    axios .post('/users/verifyToken',null,{withCredentials: true})
+            .then((res)=> { console.log('success');
+              }).catch((error)=> console.log(error));
+  }, []);
   
 
   const openChatHandler = (_id)=> {
-    console.log(_id);
+    
+    setMessages()
   }
 
   // const sendMessage = (formData)=>{
@@ -63,7 +60,7 @@ const MainPage = () => {
             <div className='users'>
               {
                 users.map((u)=>(
-                  <UserCard key={u._id} _id={u._id} firstname={u.firstname} lastname={u.lastname} openChatHandler={openChatHandler}/>
+                  <UserCard key={u._id} _id={u._id} username={u.username} openChatHandler={openChatHandler}/>
                 ))
               }
             </div>
@@ -78,7 +75,7 @@ const MainPage = () => {
               </div>
 
                 <div className='white-gradient'>  
-                    <textarea name='textarea' className='message-textarea' placeholder='Type a message...'/>
+                    <input name='textarea' className='message-textarea' placeholder='Type a message...'/>
                     <button className='send-btn' >Send</button>
                 </div>
           </div>

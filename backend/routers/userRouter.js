@@ -3,7 +3,7 @@ import { getUsers, login, signup, getUserById, verifyLogin} from "../controllers
 
 const userRouter = Router();
 
-// userRouter.route("/").get(getUsers);
+userRouter.route("/").get(getUsers);
 userRouter.route('/signup').post(signup);
 userRouter.route('/login').post(login);
 userRouter.route('/verifyToken').post(verifyLogin);

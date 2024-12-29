@@ -13,12 +13,16 @@ axios.defaults.baseURL = 'http://localhost:8080/api/v1';
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
   // </StrictMode>,
+  
+
+
   <>
     <BrowserRouter>
       <Routes>
         <Route element={<HomePage/>} path="/"/>
         <Route element={<Signup/>} path="/signup"/>
         <Route element={<Login />} path="/login"/>
+        
         <Route element={<MainPage/>} path="/chat"/>
       </Routes>
     </BrowserRouter>
