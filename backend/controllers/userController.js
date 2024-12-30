@@ -25,20 +25,20 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "invalid credentials" });
     }
 
-    const user = await User.findOne({ email });
-    if (user) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ error: "email is in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    const user = await User.create({
       username,
       email,
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_KEY, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {
         expiresIn: "1h",
         issuer: "http://localhost:8080",
       });
@@ -51,11 +51,26 @@ export const signup = async (req, res) => {
         sameSite: "lax",
       });  
 
-    res.status(201).json({ message: "User was created successfully" , newUser});
+    res.status(201).json({ message: "User was created successfully" , user});
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const isUsernameTaken = async (req,res) => {
+    try {
+        const { username } = req.body;
+
+        const result = await User.findOne({username});
+        if (result) {
+            return res.status(400).json({error: "Username is already taken."});
+        }
+
+        res.status(200);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 export const login = async (req, res) => {
   try {
@@ -87,7 +102,7 @@ export const login = async (req, res) => {
         sameSite: "lax",
       });
 
-    res.status(200).json({ message: "user logged-in successfully" });
+    res.status(200).json({ message: "user logged-in successfully" , user});
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

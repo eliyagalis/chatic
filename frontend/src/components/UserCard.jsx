@@ -2,10 +2,9 @@ import React from 'react'
 import profile from '../assets/profile.png';
 
 const UserCard = ({_id, avatar = profile, username, openChatHandler}) => {
-    
     const clickCardHandler = (e) => {
         e.preventDefault();
-        openChatHandler(_id);
+        openChatHandler({_id, avatar, username});
     }
 
   return (

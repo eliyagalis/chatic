@@ -37,6 +37,7 @@
     border-radius: 0 .5rem .5rem 0;
     width: 80%;
     text-align: center;
+    position: relative;
   }
   
   .title {
@@ -99,3 +100,19 @@
     box-sizing: border-box;
   }
 
+.error{
+  background-color: hsla(0, 100%, 50%, 0.2);
+
+}
+
+.error-message {
+  position: absolute;
+  color: hsla(0, 100%, 50%);
+  background-color: hsla(0, 100%, 50%, 0.2);
+  margin: 0;
+  padding: 0 .5rem;
+  font-size: .9rem;
+  width: 95%;
+  display: flex;
+  border-radius: .2rem;
+}

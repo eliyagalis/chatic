@@ -21,9 +21,12 @@ const Login = () => {
     if (!inputData.email || !inputData.password)
       alert("invalid email or password");
     axios
-      .post("/users/login", inputData)
+      .post("/users/login", inputData, {
+        withCredentials: true,
+      })
       .then((res) => {
-        setUserData(res.data);
+        setUserData(res.data.user);
+        localStorage.setItem('userData', JSON.stringify(res.data.user)); 
         navigate("/chat");
       })
       .catch((error) => console.log(error));

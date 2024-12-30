@@ -8,42 +8,70 @@
 .panel {
     display: flex;
     flex-direction: column;
-    height: 85%;
-    min-height: 80vh;
-    width: 90%;
+    height: 100%;
+    min-height: 95vh;
+    width: 100%;
     margin: auto;
-    background-color: hsl(0,0%,99%);
-    border: .5px solid hsl(0, 0%, 70%);
-    border-radius: .5rem;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, .1), 0px 8px 16px rgba(0, 0, 0, .1);
+    background-color: hsl(0,0%,95%);
+    border-radius: 0rem;
 }
 
 .panel-top-bar {
     height: 4rem;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    width: auto;
+    padding: 0 1rem;
+    margin: 0 auto;
     border-bottom: .5px solid hsl(0, 0%, 70%);
 }
 
+.username{
+    font-size: 1.7rem;
+}
+
+.btn {
+    text-decoration: none;
+    border-radius: .2rem;
+    background-color: hsl(0, 0%, 90%);
+    box-shadow: 0px 2px 2px rgba(0, 0%, 30%, .5);
+    border: none;
+    padding: .3rem;
+  }
+  
+.btn:hover {
+  cursor: pointer;
+}
+
 .container {
-    margin: auto;
     width: 100%;
-    height: 85%;
+    height: 100%;
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .contacts-panel {
     height: 100%;
     flex: 1;
-    border-right: .5px solid hsl(0, 0%, 70%);
-    padding: 0;
+    background-color: hsl(0,0%,100%);
+    border: .5px solid hsl(0, 0%, 70%);
+    /* border-radius: 0 1rem 1rem 0; */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, .1);
     overflow-y: auto;
     scrollbar-width: thin;
 }
 
 .chat-panel {
-    height: 100%;
+    background-color: hsl(0,0%,90%);
+    height: 95%;
     flex: 3;
-    padding: 0 1rem;
+    border: .5px solid hsl(0, 0%, 70%);
+    border-left: none;
+    border-radius: 0 1rem 1rem 0;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, .1);
+    margin: 0 1rem 0 0;
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -71,6 +99,7 @@
     position: absolute;
     background: rgb(255, 255, 255);
     background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgba(255,255,255,1) 78%, rgba(252,176,69,0) 100%);
+    border-radius: 0 0 1rem 0;
     z-index: 10;
 }
 
@@ -126,7 +155,7 @@
 }
 
 .card:hover{
-    background-color: hsl(0,0%,95%);
+    background-color: hsl(0,0%,90%);
     cursor: pointer;
 }
 
@@ -144,4 +173,11 @@
 
 .message-time {
     font-size: .7rem;
+}
+
+.room-name {
+    padding: .5rem;
+    font-size: 1.3rem;
+    background-color: white;
+    border-radius: 0 1rem 0 0;
 }

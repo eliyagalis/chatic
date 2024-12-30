@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LogoImg from "../assets/logo.png";
+import LogoImg from "../assets/logonobg.png";
 import "../styles/login.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -8,30 +8,65 @@ import { useUserData } from "../context/userContext";
 import axios from "axios";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const { setUserData } = useUserData();
+
   const [inputData, setInputData] = useState({
     username: "",
     email: "",
     password: "",
   });
 
-  const navigate = useNavigate();
-  const { setUserData } = useUserData();
+  const [inputErrors, setInputErrors] = useState({
+    username: null,
+    email: null,
+    password: null,
+  });
 
   const formSubmit = (e) => {
     e.preventDefault();
-    if (!inputData.email || !inputData.username || !inputData.password)
-      alert("invalid email or password");
     axios
-      .post("http://localhost:8080/api/v1/users/signup", inputData, {
-        withCredentials: true
+      .post("/users/signup", inputData, {
+        withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
         setUserData(res.data.user);
+        localStorage.setItem('userData', JSON.stringify(res.data.user)); 
         navigate("/chat");
       })
       .catch((error) => console.error(error));
   };
+
+  useEffect(() => {
+    if (inputData.email.length > 0 && !/\S+@\S+\.\S+/.test(inputData.email)) {
+      setInputErrors((prev) => ({
+        ...prev,
+        email: "Oops! That doesn’t look like a valid email address.",
+      }));
+    } else {
+      setInputErrors((prev) => ({ ...prev, email: null }));
+    }
+  }, [inputData.email]);
+
+  useEffect(() => {
+    if (inputData.password.length > 0 && inputData.password.length < 6)
+      setInputErrors((prev) => ({
+        ...prev,
+        password: "Your password must be at least 6 characters long.",
+      }));
+    else setInputErrors((prev) => ({ ...prev, password: null }));
+  }, [inputData.password]);
+
+  useEffect(() => {
+    if (inputData.username.length > 0 && inputData.username.length < 5) {
+      setInputErrors((prev) => ({
+        ...prev,
+        username: "Hey! Username must be at least 5 characters long.",
+      }));
+    } else {
+      setInputErrors((prev) => ({ ...prev, username: null }));
+    }
+  }, [inputData.username]);
 
   return (
     <div className="page">
@@ -48,7 +83,6 @@ const Signup = () => {
               <form onSubmit={formSubmit}>
                 <div className="title">Sign-up</div>
                 <br />
-
                 <input
                   className="log-field"
                   id="username"
@@ -59,10 +93,19 @@ const Signup = () => {
                     setInputData({ ...inputData, username: e.target.value })
                   }
                 />
-                <br />
+                {inputErrors.username ? (
+                  <div>
+                    <div className="error-message">{inputErrors.username}</div>
+                    <br />
+                  </div>
+                ) : (
+                  <br />
+                )}
 
                 <input
-                  className="log-field"
+                  className={
+                    !inputErrors.email ? "log-field" : "log-field error"
+                  }
                   id="email"
                   type="text"
                   value={inputData.email}
@@ -71,10 +114,18 @@ const Signup = () => {
                     setInputData({ ...inputData, email: e.target.value })
                   }
                 />
-                <br />
-
+                {inputErrors.email ? (
+                  <div>
+                    <div className="error-message">{inputErrors.email}</div>
+                    <br />
+                  </div>
+                ) : (
+                  <br />
+                )}
                 <input
-                  className="log-field"
+                  className={
+                    !inputErrors.password ? "log-field" : "log-field error"
+                  }
                   id="password"
                   type="password"
                   value={inputData.password}
@@ -83,14 +134,31 @@ const Signup = () => {
                     setInputData({ ...inputData, password: e.target.value })
                   }
                 />
-                <br />
+                {inputErrors.password ? (
+                  <div>
+                    <div className="error-message">{inputErrors.password}</div>
+                    <br />
+                  </div>
+                ) : (
+                  <br />
+                )}
 
-                <button className="log-field btn gold">Continue</button>
+                <button
+                  className={`log-field ${
+                    Object.values(inputErrors).some
+                    ((error) => error !== null) ? 'btn' : 'btn gold'}`
+                  }
+                  disabled={Object.values(inputErrors).some(
+                    (error) => error !== null
+                  )}
+                >
+                  Continue
+                </button>
                 <br />
                 <div className="line" />
                 <div className="title">Have an account?</div>
                 <br />
-                <Link className="home-btn" to="/login">
+                <Link className={"home-btn"} to="/login">
                   Login
                 </Link>
               </form>
