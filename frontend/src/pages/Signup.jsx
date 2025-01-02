@@ -21,10 +21,61 @@ const Signup = () => {
     username: null,
     email: null,
     password: null,
+    generalError: null
   });
 
+  const changeUsername = (e)=> {
+    setInputData({ ...inputData, username: e.target.value })
+    if (e.target.value.length > 0 && e.target.value.length < 5) {
+      setInputErrors((prev) => ({
+        ...prev,
+        username: "Hey! Username must be at least 5 characters long.",
+      }));
+    } else {
+      setInputErrors((prev) => ({ ...prev, username: null }));
+    }
+  }
+
+  const changeEmail = (e)=> {
+    setInputData({ ...inputData, email: e.target.value })
+    if (e.target.value.length > 0 && !/\S+@\S+\.\S+/.test(e.target.value)) {
+      setInputErrors((prev) => ({
+        ...prev,
+        email: "Oops! That doesn’t look like a valid email address.",
+      }));
+    } else {
+      setInputErrors((prev) => ({ ...prev, email: null }));
+    }
+  }
+
+  const changePassword = (e)=> {
+    setInputData({ ...inputData, password: e.target.value })
+    if (e.target.value.length > 0 && e.target.value.length < 6)
+      setInputErrors((prev) => ({
+        ...prev,
+        password: "Your password must be at least 6 characters long.",
+      }));
+    else setInputErrors((prev) => ({ ...prev, password: null }));
+  }
+  
   const formSubmit = (e) => {
     e.preventDefault();
+    if (!inputData.email || !inputData.password || !inputData.username) {
+      setInputErrors((prev) => ({
+        ...prev,
+        generalError: "Required fields cannot be empty...",
+      }))
+
+      setTimeout(()=>{
+        setInputErrors((prev) => ({
+          ...prev,
+          generalError: null,
+        }))
+      },2000);
+
+      return;
+    }
+
     axios
       .post("/users/signup", inputData, {
         withCredentials: true,
@@ -36,37 +87,6 @@ const Signup = () => {
       })
       .catch((error) => console.error(error));
   };
-
-  useEffect(() => {
-    if (inputData.email.length > 0 && !/\S+@\S+\.\S+/.test(inputData.email)) {
-      setInputErrors((prev) => ({
-        ...prev,
-        email: "Oops! That doesn’t look like a valid email address.",
-      }));
-    } else {
-      setInputErrors((prev) => ({ ...prev, email: null }));
-    }
-  }, [inputData.email]);
-
-  useEffect(() => {
-    if (inputData.password.length > 0 && inputData.password.length < 6)
-      setInputErrors((prev) => ({
-        ...prev,
-        password: "Your password must be at least 6 characters long.",
-      }));
-    else setInputErrors((prev) => ({ ...prev, password: null }));
-  }, [inputData.password]);
-
-  useEffect(() => {
-    if (inputData.username.length > 0 && inputData.username.length < 5) {
-      setInputErrors((prev) => ({
-        ...prev,
-        username: "Hey! Username must be at least 5 characters long.",
-      }));
-    } else {
-      setInputErrors((prev) => ({ ...prev, username: null }));
-    }
-  }, [inputData.username]);
 
   return (
     <div className="page">
@@ -89,9 +109,7 @@ const Signup = () => {
                   type="text"
                   value={inputData.username}
                   placeholder="Username"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, username: e.target.value })
-                  }
+                  onChange={changeUsername}
                 />
                 {inputErrors.username ? (
                   <div>
@@ -110,9 +128,7 @@ const Signup = () => {
                   type="text"
                   value={inputData.email}
                   placeholder="Email"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, email: e.target.value })
-                  }
+                  onChange={changeEmail}
                 />
                 {inputErrors.email ? (
                   <div>
@@ -122,6 +138,7 @@ const Signup = () => {
                 ) : (
                   <br />
                 )}
+                
                 <input
                   className={
                     !inputErrors.password ? "log-field" : "log-field error"
@@ -130,9 +147,7 @@ const Signup = () => {
                   type="password"
                   value={inputData.password}
                   placeholder="Password"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, password: e.target.value })
-                  }
+                  onChange={changePassword}
                 />
                 {inputErrors.password ? (
                   <div>
@@ -142,7 +157,15 @@ const Signup = () => {
                 ) : (
                   <br />
                 )}
-
+                {
+                  inputErrors.generalError?(
+                    <div>
+                      <div className="error-message">{inputErrors.generalError}</div>
+                      <br/>
+                    </div>
+                  ):(<></>)
+                }
+                
                 <button
                   className={`log-field ${
                     Object.values(inputErrors).some

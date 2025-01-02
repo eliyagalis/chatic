@@ -45,8 +45,8 @@ export const signup = async (req, res) => {
   
       res.cookie("jwt", token, {
         httpOnly: true,
-        maxAge: 3600000, // 1 hour
-        secure: false, // Set to true in production if using HTTPS
+        maxAge: 3600000,
+        secure: false,
         path: "/",
         sameSite: "lax",
       });  
@@ -97,7 +97,7 @@ export const login = async (req, res) => {
       res.cookie("jwt", token, {
         httpOnly: true,
         secure: false,
-        maxAge: 86400000, // 1 day
+        maxAge: 3600000,
         path: "/",
         sameSite: "lax",
       });
@@ -151,3 +151,9 @@ export const verifyToken = (req, res) => {
       res.status(401).json({ error: "Invalid token" });
     }
   };
+
+
+  export const logout = (req,res) => {
+    res.clearCookie('jwt', {domain: "localhost"});
+    res.status(200).send({ message: "Logged out successfully" });
+  }

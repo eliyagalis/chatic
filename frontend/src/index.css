@@ -3,7 +3,14 @@
   font-weight: 400;
   background-color: #202020;
   scrollbar-width:thin;
-  scrollbar-color: hsl(0, 0%, 60%) hsl(0, 0%, 80%);
+  
+  --gold: hsl(50, 70%, 50%);
+  --light-gold: hsl(50, 60%, 50%);
+  --white: hsl(0, 0%, 100%);
+  --light-white: hsl(0,0%,100%);
+  --dark: hsl(0, 0%, 50%);
+  --gray: hsl(0, 0%, 95%);
+
 }
 
 .page {
