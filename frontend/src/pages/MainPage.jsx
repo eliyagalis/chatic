@@ -14,7 +14,8 @@ const initialState = {
   room: null,
   messages: [],
   messageText: "",
-  newChats: false,
+  isNewChats: false,
+  notifications: {}
 };
 
 const reducer = (state, action) => {
@@ -25,12 +26,20 @@ const reducer = (state, action) => {
       return { ...state, chats: action.payload };
     case "SET_ROOM":
       return { ...state, room: action.payload };
-    case "SET_MESSAGES":
-      return { ...state, messages: action.payload };
+      case "SET_MESSAGES":
+        return {
+          ...state,
+          messages:
+            typeof action.payload === "function"
+              ? action.payload(state.messages)
+              : action.payload,
+        };
     case "SET_MESSAGE_TEXT":
       return { ...state, messageText: action.payload };
-    case "SET_NEW_CHATS":
-      return { ...state, newChats: action.payload };
+    case "SET_IS_NEW_CHATS":
+      return { ...state, isNewChats: action.payload };
+    case "SET_NOTIFICATIONS":
+      return {...state, notifications: action.payload };
     default:
       return state;
   }
@@ -44,7 +53,6 @@ const MainPage = () => {
   const [messageText, setMessageText] = useState("");
 
   useEffect(() => {
-    // Verify user session
     axios
       .post("users/verifyToken", null, {
         withCredentials: true,
@@ -54,14 +62,14 @@ const MainPage = () => {
         navigate("/login");
       });
 
-    // Get list of users to start new chats
     axios
-      .get("/users")
+      .get(`rooms/${userData._id}`)
       .then((res) => {
-        dispatch({ type: "SET_CHATS", payload: res.data });
+        dispatch({ type: "SET_CHATS", payload: res.data});
+        socket.emit("JoinRooms", res.data.map((room)=>room._id)); 
       })
       .catch((error) => console.log(error));
-  }, [navigate]);
+  }, [state.chats]);
 
   const logout = (e) => {
     e.preventDefault();
@@ -82,24 +90,21 @@ const MainPage = () => {
       })
       .catch((error) => console.log(error));
 
-    dispatch({ type: "SET_NEW_CHATS", payload: true });
+    dispatch({ type: "SET_IS_NEW_CHATS", payload: true });
   };
 
   const openChatHandler = (chatUser) => {
     const participants = [userData._id, chatUser._id];
-    console.log(participants);
 
     axios
       .post("/rooms", participants)
       .then((res) => {
-        console.log(res.data);
         dispatch({ type: "SET_ROOM", payload: res.data });
+        dispatch({type: "SET_MESSAGES", payload: res.data.messages});
         socket.emit("JoinRoom", res.data._id);
+        
       })
       .catch((error) => console.log(error));
-    
-    // Optionally update chat list here if needed
-    // dispatch({ type: "SET_CHATS", payload: [...state.chats, chatUser] });
   };
 
   const sendMessage = (e) => {
@@ -114,32 +119,51 @@ const MainPage = () => {
       time: `${new Date().getHours()}:${new Date().getMinutes()}`,
     };
 
-    // Emit the message to the room
+    // dispatch({
+    //   type: "SET_MESSAGES",
+    //   payload: [...state.messages, newMessage],
+    // });
+
     socket.emit("SendMessage", state.room._id, newMessage);
-    setMessageText(""); // Reset message input
+    setMessageText("");
   };
 
   useEffect(() => {
-    // Handle received messages
-    socket.on("ReceiveMessage", (msgObj) => {
-      dispatch({
-        type: "SET_MESSAGES",
-        payload: [...state.messages, msgObj], // Use the previous state to update messages
-      });
+    socket.on("ReceiveMessage", ({ room, messageObject }) => {
+      if (!state.room || room !== state.room._id) {
+        dispatch({
+          type: "SET_NOTIFICATIONS",
+          payload: {
+            ...state.notifications,
+            [room]: (state.notifications[room] || 0) + 1,
+          },
+        });
+      } else {
+        dispatch({
+          type: "SET_MESSAGES",
+          payload: (prevMessages) => [...prevMessages, messageObject],
+        });
+      }
     });
-  }, [state.messages]); // Run when messages state changes
+  
+    return () => {
+      socket.off("ReceiveMessage");
+    };
+
+  }, [state.room]);
 
   return (
     <div className="main page">
-      {state.newChats ? (
+      {state.isNewChats && (
         <div
           className="find-users-background"
           onClick={() =>
-            dispatch({ type: "SET_NEW_CHATS", payload: !state.newChats })
+            dispatch({ type: "SET_IS_NEW_CHATS", payload: !state.isNewChats })
           }>
           <div className="find-users-panel">
+            <div className="title">Start a new chat</div>
             {state.users.map((u) => (
-              <UserCard
+              u._id!==userData._id && <UserCard
                 key={u._id}
                 _id={u._id}
                 username={u.username}
@@ -148,8 +172,6 @@ const MainPage = () => {
             ))}
           </div>
         </div>
-      ) : (
-        <></>
       )}
       <div className="panel">
         <div className="panel-top-bar">
@@ -167,7 +189,7 @@ const MainPage = () => {
             </div>
           </div>
           <div className="chat-panel">
-            {state.room ? <div className="room-name">{state.room._id}</div> : null}
+            {state.room && <div className="room-name">{state.room.participantsUsernames.find((username)=> username!==userData.username)}</div>}
           </div>
         </div>
         <div className="container">
@@ -176,8 +198,9 @@ const MainPage = () => {
               {state.chats.map((u) => (
                 <RoomCard
                   key={u._id}
-                  _id={u._id}
-                  username={u.username}
+                  _id={u.participants.find((_id)=> _id!==userData._id)}
+                  username={u.participantsUsernames.find((username)=> username!==userData.username)}
+                  isActive={state.room? state.room._id===u._id : null}
                   openChatHandler={openChatHandler}
                 />
               ))}

@@ -22,13 +22,13 @@ html, body {
 .panel {
     display: flex;
     flex-direction: column;
-    height: 99%;
+    height: 100%;
     width: 100%;
     background: var(--light-white);
 }
 
 .panel-top-bar {
-    height: 4rem;
+    height: 20%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,7 +42,7 @@ html, body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: .5rem;
+    padding: 0 .5rem;
 }
 
 .username {
@@ -159,6 +159,16 @@ html, body {
     align-items: center;
     gap: 1rem;
     border-bottom: 1px solid var(--gray);
+    /* transition: all .2s; */
+}
+
+.card:hover {
+    cursor: pointer;
+    background-color: var(--light-gold);
+}
+
+.active {
+    background-color: var(--light-gold);
 }
 
 .message {
@@ -173,7 +183,7 @@ html, body {
 }
 
 .received {
-    background-color: var(--light-gold);
+    background-color: var(--gold);
 }
 
 .sent {
@@ -216,13 +226,14 @@ html, body {
     padding: 2rem;
     border-radius: 1rem;
     display: flex;
+    flex-direction: column;
+    border: 1px solid var(--dark);
+    width: 50%;
 }
 
 .user-card {
-    border-radius: 2rem;
-    padding: 2rem;
-    margin: 1rem;
-    border: 1px solid var(--dark);
+    padding:  .5rem;
+    border: .6px solid var(--dark);
     background-color: var(--gray);
     color: var(--dark);
     display: flex;

@@ -12,7 +12,11 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-    }
+    },
+    rooms: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Room'
+    }]
     }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

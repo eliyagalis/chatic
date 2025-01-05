@@ -4,8 +4,8 @@
   background-color: #202020;
   scrollbar-width:thin;
   
-  --gold: hsl(50, 70%, 50%);
-  --light-gold: hsl(50, 60%, 50%);
+  --gold: hsl(50, 80%, 50%);
+  --light-gold: hsl(0, 0%, 89%);
   --white: hsl(0, 0%, 100%);
   --light-white: hsl(0,0%,100%);
   --dark: hsl(0, 0%, 50%);

@@ -4,11 +4,11 @@ import { getUsers, login, signup, getUserById, verifyToken, isUsernameTaken, log
 const userRouter = Router();
 
 userRouter.route("/").get(getUsers);
+userRouter.route('/:userId').get(getUserById);
 userRouter.route('/signup').post(signup);
 userRouter.route('/isUsernameTaken').post(isUsernameTaken);
 userRouter.route('/login').post(login);
 userRouter.route('/logout').post(logout);
 userRouter.route('/verifyToken').post(verifyToken);
-userRouter.route('/:userId').get(getUserById);
 
 export default userRouter;
