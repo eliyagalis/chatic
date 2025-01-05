@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router";
 import { useUserData } from "../context/userContext";
 import axios from "axios";
+import FormField from "../components/FormField";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Signup = () => {
 
   const changeUsername = (e)=> {
     setInputData({ ...inputData, username: e.target.value })
+    
     if (e.target.value.length > 0 && e.target.value.length < 5) {
       setInputErrors((prev) => ({
         ...prev,
@@ -38,6 +40,7 @@ const Signup = () => {
 
   const changeEmail = (e)=> {
     setInputData({ ...inputData, email: e.target.value })
+    
     if (e.target.value.length > 0 && !/\S+@\S+\.\S+/.test(e.target.value)) {
       setInputErrors((prev) => ({
         ...prev,
@@ -50,6 +53,7 @@ const Signup = () => {
 
   const changePassword = (e)=> {
     setInputData({ ...inputData, password: e.target.value })
+    
     if (e.target.value.length > 0 && e.target.value.length < 6)
       setInputErrors((prev) => ({
         ...prev,
@@ -103,60 +107,31 @@ const Signup = () => {
               <form onSubmit={formSubmit}>
                 <div className="title">Sign-up</div>
                 <br />
-                <input
-                  className="log-field"
-                  id="username"
-                  type="text"
+                
+                <FormField 
+                  type="text" 
                   value={inputData.username}
                   placeholder="Username"
                   onChange={changeUsername}
+                  error={inputErrors.username}
                 />
-                {inputErrors.username ? (
-                  <div>
-                    <div className="error-message">{inputErrors.username}</div>
-                    <br />
-                  </div>
-                ) : (
-                  <br />
-                )}
 
-                <input
-                  className={
-                    !inputErrors.email ? "log-field" : "log-field error"
-                  }
-                  id="email"
-                  type="text"
+                <FormField 
+                  type="text" 
                   value={inputData.email}
                   placeholder="Email"
                   onChange={changeEmail}
+                  error={inputErrors.email}
                 />
-                {inputErrors.email ? (
-                  <div>
-                    <div className="error-message">{inputErrors.email}</div>
-                    <br />
-                  </div>
-                ) : (
-                  <br />
-                )}
                 
-                <input
-                  className={
-                    !inputErrors.password ? "log-field" : "log-field error"
-                  }
-                  id="password"
-                  type="password"
+                <FormField 
+                  type="password" 
                   value={inputData.password}
                   placeholder="Password"
                   onChange={changePassword}
+                  error={inputErrors.password}
                 />
-                {inputErrors.password ? (
-                  <div>
-                    <div className="error-message">{inputErrors.password}</div>
-                    <br />
-                  </div>
-                ) : (
-                  <br />
-                )}
+
                 {
                   inputErrors.generalError?(
                     <div>

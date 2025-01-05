@@ -1,16 +1,17 @@
 import React from 'react'
 import profile from '../assets/profile.png';
 
-const UserCard = ({_id, avatar = profile, username, openChatHandler}) => {
-    const clickCardHandler = (e) => {
-        e.preventDefault();
-        openChatHandler({_id, avatar, username});
-    }
-
+const UserCard = ({_id, username, openChatHandler}) => {
+  
+  const handler = (e)=> {
+    e.preventDefault();
+    openChatHandler({_id, username});
+  }
+  
   return (
-    <div className='card' onClick={clickCardHandler}>
-        <img src={avatar} className='avatar'/>
-        <div>{username}</div>
+    <div className='user-card' onClick={handler}>
+        <img className='avatar' src={profile}/>
+        <div className='title'>{username}</div>
     </div>
   )
 }

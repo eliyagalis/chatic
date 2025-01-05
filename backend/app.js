@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
     socket.join(room);
   });
 
-  socket.on("messageInRoom", (room, messageObject) => {
+  socket.on("SendMessage", (room, messageObject) => {
     io.to(room).emit("ReceiveMessage", messageObject);
   });
 });

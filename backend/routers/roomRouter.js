@@ -4,8 +4,8 @@ import { createRoom, getRoomById, getRoomByParticipants, getRooms } from "../con
 const roomRouter = Router();
 
 roomRouter.route('/')
-    .get(getRoomByParticipants)
-    .post(createRoom);
+    .get(getRooms)
+    .post(getRoomByParticipants);
 roomRouter.route('/:roomId')
     .get(getRoomById);
 
