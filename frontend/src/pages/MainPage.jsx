@@ -7,6 +7,7 @@ import axios from "axios";
 import { useUserData } from "../context/userContext";
 import { socket } from "../utils/socket.js";
 import UserCard from "../components/UserCard.jsx";
+import Header from "../components/Header.jsx";
 
 const initialState = {
   users: [],
@@ -15,7 +16,7 @@ const initialState = {
   messages: [],
   messageText: "",
   isNewChats: false,
-  notifications: {}
+  notifications: {},
 };
 
 const reducer = (state, action) => {
@@ -26,20 +27,20 @@ const reducer = (state, action) => {
       return { ...state, chats: action.payload };
     case "SET_ROOM":
       return { ...state, room: action.payload };
-      case "SET_MESSAGES":
-        return {
-          ...state,
-          messages:
-            typeof action.payload === "function"
-              ? action.payload(state.messages)
-              : action.payload,
-        };
+    case "SET_MESSAGES":
+      return {
+        ...state,
+        messages:
+          typeof action.payload === "function"
+            ? action.payload(state.messages)
+            : action.payload,
+      };
     case "SET_MESSAGE_TEXT":
       return { ...state, messageText: action.payload };
     case "SET_IS_NEW_CHATS":
       return { ...state, isNewChats: action.payload };
     case "SET_NOTIFICATIONS":
-      return {...state, notifications: action.payload };
+      return { ...state, notifications: action.payload };
     default:
       return state;
   }
@@ -65,8 +66,11 @@ const MainPage = () => {
     axios
       .get(`rooms/${userData._id}`)
       .then((res) => {
-        dispatch({ type: "SET_CHATS", payload: res.data});
-        socket.emit("JoinRooms", res.data.map((room)=>room._id)); 
+        dispatch({ type: "SET_CHATS", payload: res.data });
+        socket.emit(
+          "JoinRooms",
+          res.data.map((room) => room._id)
+        );
       })
       .catch((error) => console.log(error));
   }, [state.chats]);
@@ -100,9 +104,8 @@ const MainPage = () => {
       .post("/rooms", participants)
       .then((res) => {
         dispatch({ type: "SET_ROOM", payload: res.data });
-        dispatch({type: "SET_MESSAGES", payload: res.data.messages});
+        dispatch({ type: "SET_MESSAGES", payload: res.data.messages });
         socket.emit("JoinRoom", res.data._id);
-        
       })
       .catch((error) => console.log(error));
   };
@@ -118,11 +121,6 @@ const MainPage = () => {
       content: messageText,
       time: `${new Date().getHours()}:${new Date().getMinutes()}`,
     };
-
-    // dispatch({
-    //   type: "SET_MESSAGES",
-    //   payload: [...state.messages, newMessage],
-    // });
 
     socket.emit("SendMessage", state.room._id, newMessage);
     setMessageText("");
@@ -145,11 +143,10 @@ const MainPage = () => {
         });
       }
     });
-  
+
     return () => {
       socket.off("ReceiveMessage");
     };
-
   }, [state.room]);
 
   return (
@@ -159,17 +156,21 @@ const MainPage = () => {
           className="find-users-background"
           onClick={() =>
             dispatch({ type: "SET_IS_NEW_CHATS", payload: !state.isNewChats })
-          }>
+          }
+        >
           <div className="find-users-panel">
-            <div className="title">Start a new chat</div>
-            {state.users.map((u) => (
-              u._id!==userData._id && <UserCard
-                key={u._id}
-                _id={u._id}
-                username={u.username}
-                openChatHandler={openChatHandler}
-              />
-            ))}
+            <div className="title">Start a new conversation</div>
+            {state.users.map(
+              (u) =>
+                u._id !== userData._id && (
+                  <UserCard
+                    key={u._id}
+                    _id={u._id}
+                    username={u.username}
+                    openChatHandler={openChatHandler}
+                  />
+                )
+            )}
           </div>
         </div>
       )}
@@ -179,9 +180,6 @@ const MainPage = () => {
             <div className="user-bar">
               <div className="username">{userData.username}</div>
               <div>
-                <button className="send-btn" onClick={startNewChat}>
-                  +
-                </button>
                 <button className="logout" onClick={logout}>
                   Log Out
                 </button>
@@ -189,7 +187,14 @@ const MainPage = () => {
             </div>
           </div>
           <div className="chat-panel">
-            {state.room && <div className="room-name">{state.room.participantsUsernames.find((username)=> username!==userData.username)}</div>}
+            {state.room && (
+              <div className="room-name">
+                {state.room.participantsUsernames.find(
+                  (username) => username !== userData.username
+                )}
+                <button className="send-btn">Challange</button>
+              </div>
+            )}
           </div>
         </div>
         <div className="container">
@@ -198,13 +203,18 @@ const MainPage = () => {
               {state.chats.map((u) => (
                 <RoomCard
                   key={u._id}
-                  _id={u.participants.find((_id)=> _id!==userData._id)}
-                  username={u.participantsUsernames.find((username)=> username!==userData.username)}
-                  isActive={state.room? state.room._id===u._id : null}
+                  _id={u.participants.find((_id) => _id !== userData._id)}
+                  username={u.participantsUsernames.find(
+                    (username) => username !== userData.username
+                  )}
+                  isActive={state.room ? state.room._id === u._id : null}
                   openChatHandler={openChatHandler}
                 />
               ))}
             </div>
+            <button className="send-btn add" onClick={startNewChat}>
+              Start a new conversation
+            </button>
           </div>
           {state.room ? (
             <div className="chat-panel">
@@ -241,6 +251,7 @@ const MainPage = () => {
           )}
         </div>
       </div>
+      <Header />
     </div>
   );
 };
