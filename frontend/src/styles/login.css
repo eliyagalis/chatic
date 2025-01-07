@@ -116,3 +116,47 @@
   display: flex;
   border-radius: .2rem;
 }
+
+.errors {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff5044;
+  color: white;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease-out, slideUp 0.3s ease-in 2s forwards;
+  z-index: 1000;
+}
+
+.errors-hidden {
+  display: none;
+}
+
+@keyframes slideDown {
+  from {
+      top: -2rem;
+      opacity: 0;
+  }
+
+  to {
+      top: 2rem;
+      opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+      top: 2rem;
+      opacity: 1;
+  }
+
+  to {
+      top: -2rem;
+      opacity: 0;
+  }
+}

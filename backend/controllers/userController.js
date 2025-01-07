@@ -8,7 +8,7 @@ export const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
     if (!users) {
-      return res.status(404).json({ error: "users not found" });
+      return res.status(404).json({ error: "Users not found" });
     }
 
     res.status(200).json(users);
@@ -22,12 +22,12 @@ export const signup = async (req, res) => {
     const { username, password, email } = req.body;
 
     if (!username || !password || !email) {
-      return res.status(400).json({ message: "invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "email is in use" });
+      return res.status(400).json({ error: "Email is in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -77,16 +77,16 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email) {
-      return res.status(400).json({ error: "username is required" });
+      return res.status(400).json({ error: "Username is required" });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User doesn't exist." });
     }
 
     if (!(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ error: "wrong password" });
+      return res.status(400).json({ error: "Wrong password." });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {
@@ -102,7 +102,7 @@ export const login = async (req, res) => {
         sameSite: "lax",
       });
 
-    res.status(200).json({ message: "user logged-in successfully" , user});
+    res.status(200).json({ message: "User logged-in successfully" , user});
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -114,7 +114,7 @@ export const getUserById = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: "user not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     res.status(200).json(user);
@@ -128,7 +128,7 @@ export const editUser = async (req, res) => {
     const userId = req.params;
 
     if (!userId) {
-      return res.status(400).json({ error: "invalid user id" });
+      return res.status(400).json({ error: "Invalid user id" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

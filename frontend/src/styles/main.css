@@ -96,7 +96,7 @@ html, body {
 }
 
 .chat-messages {
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     padding: 0 0 5rem 0;
     height: 100%;
@@ -143,7 +143,8 @@ html, body {
     border: 1px solid var(--gold);
     background: var(--gold);
     color: var(--white);
-    transition: all .2s;
+    transition: all 0.2s;
+    /* box-shadow: 0 0 8px var(--gold); */
 }
 
 .send-btn:hover {
@@ -210,7 +211,7 @@ html, body {
     font-size: 1.4rem;
     font-weight: bold;
     background-color: var(--light-white);
-    padding: 0 5rem;
+    padding: 0 2rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

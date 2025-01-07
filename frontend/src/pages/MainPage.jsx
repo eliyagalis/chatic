@@ -251,7 +251,6 @@ const MainPage = () => {
           )}
         </div>
       </div>
-      <Header />
     </div>
   );
 };

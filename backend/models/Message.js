@@ -15,11 +15,13 @@ const messageSchema = new mongoose.Schema({
         ref: "Room",
         required: true,
     },
-    time: {
-        type: String,
+    isRead: {
+        type: Boolean,
         required: true,
-    }
-});
+    },
+},{ 
+    timestamps: { createdAt: 'sentAt', updatedAt: 'modifiedAt' }
+  });
 
 const Message = mongoose.model("Message", messageSchema);
 

@@ -7,6 +7,7 @@ import roomRouter from "./routers/roomRouter.js";
 import messageRouter from "./routers/messageRouter.js";
 import { Server } from "socket.io";
 import { dbConnect } from "./utils/mongoConnect.js";
+import wordcodeRouter from "./routers/wordcodeRouter.js";
 
 const app = express();
 app.use(express.json());
@@ -37,5 +38,6 @@ io.on("connection", (socket) => {
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/rooms", roomRouter);
 app.use("/api/v1/rooms", messageRouter);
+app.use("/api/v1/wordcode", wordcodeRouter);
 
 dbConnect(server);

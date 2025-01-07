@@ -22,12 +22,12 @@ const HomePage = () => {
             <div className='home-sec-text'>
               Your privacy is valued.
               <br/>
-              With <b>chatic</b> it's safe!
+              With <b>chatic</b> you're safe!
             </div>
               <p className='home-sec-p'>Experience seamless conversations with 
                 a chat app designed with your security in mind.
                 Chatic ensures your messages remain private, always. 
-                Share texts, files, and connect without worry, 
+                Share and connect without worry, 
                 knowing your communication is safeguarded with 
                 cutting-edge security protocols.</p>
           </div>

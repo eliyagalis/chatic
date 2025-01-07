@@ -12,15 +12,17 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState()
 
   const navigate = useNavigate();
   const { setUserData } = useUserData();
 
   const formSubmit = (e) => {
     e.preventDefault();
-    if (!inputData.email || !inputData.password)
-      alert("invalid email or password");
-    axios
+    if (!inputData.email || !inputData.password) {
+      errorHandler("Fill the required fields please.");
+    } else {
+      axios
       .post("/users/login", inputData, {
         withCredentials: true,
       })
@@ -29,12 +31,26 @@ const Login = () => {
         localStorage.setItem('userData', JSON.stringify(res.data.user)); 
         navigate("/chat");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+          errorHandler(error.response.data.error);
+      });
+    }
   };
+
+  const errorHandler = (errorContent)=> {
+    setErrors(errorContent);
+      setTimeout(()=>{
+        setErrors("");
+      },3000);
+  }
 
   return (
     <div className="page">
+      <div className="error"></div>
       <Header />
+      <div className={errors ? "errors" : "errors-hidden"}>
+        {errors}
+      </div>
       <div className="log">
         <div className="log-container">
           <div className="left-sec">
