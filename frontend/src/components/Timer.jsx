@@ -26,32 +26,20 @@ const Timer = () => {
     }
   };
 
-  useEffect(() => {
-    const initialInterval = setInterval(() => {
-      setTimer((prev) => {
-        const newSeconds = prev.seconds + 1;
-        const newMinutes = prev.minutes + Math.floor(newSeconds / 60);
-
-        return {
-          minutes: newMinutes,
-          seconds: newSeconds % 60,
-        };
-      });
-    }, 1000);
-
-    setIntervalData({ intervalId: initialInterval, isRunning: true });
-
-    return () => clearInterval(initialInterval);
-  }, []);
-
   return (
     <div className="timer-bar">
-      <button className="help instructions">?</button>
-      
-      {timer.minutes}:{timer.seconds.toString().padStart(2, "0")}
+        <div className="challenge-head">
+            <button className="help instructions">?</button>
+            <div className="popup-window">You have 6 attempts to guess a 5 word letter</div>
+        </div>
+        <div className="challenge-head">
+            {timer.minutes}:{timer.seconds.toString().padStart(2, "0")}
+        </div>
+      <div className="challenge-head">
       <button onClick={toggleTimer} className="help">
         {intervalData.isRunning ? "II" : "▶"}
-      </button>
+        </button>
+      </div>
     </div>
   );
 };
