@@ -12,7 +12,6 @@ const Footer = () => {
             <div className='title'>chatic</div>
             <div>Secured chat app🔒</div>
             <br/>
-            <div>Created by Eliya Galis</div>
             <div className='footer-links'>
                 <a href='https://github.com/eliyagalis'>
                   <img className='footer-images' src={githubpng} />

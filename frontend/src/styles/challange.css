@@ -8,10 +8,17 @@
     align-items: center;
 }
 
+.timer-bar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 1.3rem;
+}
+
 .display {
     padding: 1rem;
     margin: auto;
-    border: 3px solid var(--dark);
+    /* border: 3px solid var(--dark); */
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
@@ -30,18 +37,28 @@
 
 .help {
     border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
+    border: 2px solid var(--gray);
+    background-color: var(--gray);
+    color: var(--dark);
+    font-weight: 700;
+    width: 2.3rem;
+    height: 2.3rem;
     text-align: center;
-    font-weight: 600;
+}
+
+.help:hover {
+    cursor: pointer;
+    border-color: var(--gold);
+    color: var(--gold);
 }
 
 .letter {
     background-color: var(--light-gold);
-    border: 1px solid var(--dark);
+    border: none;
+    color: hsl(0, 0%, 25%);
     font-weight: 600;
-    font-size: 1.2rem;
-    padding: .3rem;
+    font-size: 1.3rem;
+    padding: .3rem .5rem;
     margin: .1rem;
     transition: all .2s;
     text-align: center;
@@ -58,7 +75,6 @@
     margin: auto;
     width: fit-content;
     text-align: center;
-    background-color: var(--gray);
     padding: 1rem;
     border-radius: 1rem;
 }
@@ -70,16 +86,31 @@
 }
 
 .display-letter {
-    width: 3rem;
-    height: 3rem;
-    margin: .3rem;
-    border: 1px solid var(--dark);
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: .2rem;
+    border: 2px solid var(--gray);
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 2rem;
-    font-weight: 600;
-    background-color: var(--gray);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.typed {
+    border: 2px solid var(--dark);
+    background-color: var(--dark);
+    animation: typing .2s ease-in-out;
+}
+
+@keyframes typing {
+    from {
+        transform: scale(1.2);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 
 .errors {
@@ -124,4 +155,14 @@
         top: -2rem;
         opacity: 0;
     }
+}
+
+.place {
+    background-color: rgb(0, 192, 0);
+    border-color: rgb(0, 192, 0);
+}
+
+.exists {
+    background-color: var(--gold);
+    border-color: var(--gold);
 }
