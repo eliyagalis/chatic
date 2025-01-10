@@ -6,7 +6,7 @@ const roomRouter = Router();
 roomRouter.route('/')
     .get(getRooms)
     .post(getRoomByParticipants);
-roomRouter.route('/:userId')
+roomRouter.route('/roomByUser/:userId')
     .get(getRoomsOfUser);
 
 export default roomRouter;

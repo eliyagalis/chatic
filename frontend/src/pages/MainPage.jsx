@@ -7,7 +7,7 @@ import axios from "axios";
 import { useUserData } from "../context/userContext.jsx";
 import { socket } from "../utils/socket.js";
 import UserCard from "../components/UserCard.jsx";
-import {chatReducer, initialState} from "../reducers/chatReducer.js";
+import { chatReducer, initialState } from "../reducers/chatReducer.js";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -24,9 +24,9 @@ const MainPage = () => {
       .catch((error) => {
         navigate("/login");
       });
-      
+
     axios
-      .get(`rooms/${userData._id}`)
+      .get(`rooms/roomByUser/${userData._id}`)
       .then((res) => {
         dispatch({ type: "SET_CHATS", payload: res.data });
         socket.emit(
@@ -66,9 +66,16 @@ const MainPage = () => {
       .post("/rooms", participants)
       .then((res) => {
         dispatch({ type: "SET_ROOM", payload: res.data });
-        dispatch({ type: "SET_MESSAGES", payload: res.data.messages });
         socket.emit("JoinRoom", res.data._id);
       })
+      .catch((error) => {
+        console.log(error);
+        return;
+      });
+
+    axios
+      .get(`/rooms/${state.room._id}`)
+      .then((res) => dispatch({ type: "SET_MESSAGES", payload: res.data }))
       .catch((error) => console.log(error));
   };
 
@@ -81,11 +88,17 @@ const MainPage = () => {
       _id: state.messages.length + 1,
       senderId: userData._id,
       content: messageText,
-      time: `${new Date().getHours()}:${new Date().getMinutes()}`,
     };
 
-    socket.emit("SendMessage", state.room._id, newMessage);
-    setMessageText("");
+    axios
+      .post(`/rooms/${state.room._id}`, newMessage)
+      .then((res) => {
+        socket.emit("SendMessage", state.room._id, newMessage);
+        setMessageText("");
+      })
+      .catch((error) => console.log(error));
+
+    
   };
 
   useEffect(() => {

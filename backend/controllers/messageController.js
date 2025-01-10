@@ -6,11 +6,8 @@ export const getMessagesByRoomId = async(req,res)=> {
         const { roomId } = req.params;
         const messages = await Message.find(roomId);
 
-        if (!messages) {
-            return res.status(400).json({error: "messages not found"});
-        }
-
         res.status(200).json(messages);
+
     } catch (error) {
         res.status(500).json({error: "internal server error"});
     }
@@ -19,7 +16,7 @@ export const getMessagesByRoomId = async(req,res)=> {
 export const createMessage = async (req,res)=> {
     try {
         const { roomId } = req.params;
-        const { content, senderId, time } = req.body;
+        const { content, senderId } = req.body;
 
         if (!content || !senderId) {
             return res.status(400).json({error: "invalid credentials"});
@@ -32,7 +29,7 @@ export const createMessage = async (req,res)=> {
         }
 
         const message = await Message.create({
-            roomId, content, senderId, time
+            roomId, content, senderId, isRead: false
         });
 
         const updatedRoom = await Room.findByIdAndUpdate(
