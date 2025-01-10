@@ -2,47 +2,9 @@ import React, { useEffect, useReducer, useState } from "react";
 import "../styles/challange.css";
 import axios from "axios";
 import Timer from "../components/Timer";
-import Header from "../components/Header";
-
-// const initialState = {
-//   tempWord: Array.from({ length: 6 }, () =>
-//     Array.from({ length: 5 }, () => ({
-//       content: "",
-//       place: false,
-//       exists: false,
-//     }))),
-
-// };
-
-// const reducer = (state, action) => {
-//   switch (action.type) {
-//     case "SET_USERS":
-//       return { ...state, users: action.payload };
-//     case "SET_CHATS":
-//       return { ...state, chats: action.payload };
-//     case "SET_ROOM":
-//       return { ...state, room: action.payload };
-//     case "SET_MESSAGES":
-//       return {
-//         ...state,
-//         messages:
-//           typeof action.payload === "function"
-//             ? action.payload(state.messages)
-//             : action.payload,
-//       };
-//     case "SET_MESSAGE_TEXT":
-//       return { ...state, messageText: action.payload };
-//     case "SET_IS_NEW_CHATS":
-//       return { ...state, isNewChats: action.payload };
-//     case "SET_NOTIFICATIONS":
-//       return { ...state, notifications: action.payload };
-//     default:
-//       return state;
-//   }
-// };
+import ChallengeResult from "../components/ChallengeResult";
 
 const Challange = () => {
-//   const [state, dispatch] = useReducer(reducer, initialState);
 
   const letters = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -50,8 +12,10 @@ const Challange = () => {
     ["Z", "X", "C", "V", "B", "N", "M"],
   ];
 
+  const [currentRow, setCurrentRow] = useState(0);
+  const [errors, setErrors] = useState("");
+  const [gameStatus, setGameStatus] = useState();
   const [keyboardStatus, setKeyboardStatus] = useState({place: [], exists: []});
-
   const [tempWord, setTempWord] = useState(
     Array.from({ length: 6 }, () =>
       Array.from({ length: 5 }, () => ({
@@ -59,10 +23,7 @@ const Challange = () => {
         place: false,
         exists: false,
       }))
-    )
-  );
-  const [currentRow, setCurrentRow] = useState(0);
-  const [errors, setErrors] = useState("");
+    ));
 
   const keyboardHandler = (value) => {
     if (currentRow < tempWord.length) {
@@ -82,7 +43,6 @@ const Challange = () => {
   };
 
   const backspace = (e) => {
-    e.preventDefault();
     if (currentRow < tempWord.length) {
       const updatedWord = [...tempWord];
       const row = [...updatedWord[currentRow]];
@@ -100,7 +60,6 @@ const Challange = () => {
   };
 
   const submitHandler = (e) => {
-    e.preventDefault();
     if (tempWord[currentRow].some((cell) => cell.content === "")) {
       setErrors("Complete the word before submitting.");
 
@@ -121,7 +80,18 @@ const Challange = () => {
         setTempWord(updatedWord);
         
         if (res.data.correctLetters === 5) {
-        } else {
+            setTimeout(() => {
+                setGameStatus("success");
+            }, 1500);
+        }
+
+        else if (currentRow === 5) {
+            setTimeout(() => {
+                setGameStatus("defeat");
+            }, 1500);
+        }
+
+        else {
             const newKeyboardstatus = { ...keyboardStatus };
             res.data.result.map((w)=> {
                 if (w.exists) {
@@ -135,17 +105,25 @@ const Challange = () => {
             setCurrentRow((prev) => prev + 1);}
       })
       .catch((error) => {
-        console.log(error);
+            setErrors(error.response.data.error);
+
+            setTimeout(() => {
+                setErrors("");
+            }, 3000);
       });
   };
 
   return (
     <div className="challange">
       <div className={errors ? "errors" : "errors-hidden"}>{errors}</div>
+        <div className="challenge-title">WORDCODE</div>
+        <div className="challenge-header">
+        <button className="send-btn">Back to the chat</button>
+        </div>
+        
       <div className="display">
+      
         <Timer />
-        <div className="challange-title">WORDCODE</div>
-        <div>Try to guess a word of 5 letters.</div>
         {tempWord.map((row, rowIndex) => (
           <div className="display-row" key={rowIndex}>
             {row.map((cell, index) => (
@@ -165,7 +143,7 @@ const Challange = () => {
               {row.map((letter, letterIndex) => (
                 <button
                   key={letterIndex}
-                  className={`letter ${keyboardStatus.place.includes(letter)?"place": 
+                  className={`letter ${keyboardStatus.place.includes(letter) ? "place": 
                     keyboardStatus.exists.includes(letter)&& "exists"
                   }`}
                   onClick={() => keyboardHandler(letter)}
@@ -187,6 +165,8 @@ const Challange = () => {
           ))}
         </div>
       </div>
+    { gameStatus && (<div className="overlay"/>)}
+    { gameStatus === "success" && (<ChallengeResult resultArray={tempWord} />)}
     </div>
   );
 };

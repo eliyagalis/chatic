@@ -2,55 +2,17 @@ import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/main.css";
 import RoomCard from "../components/RoomCard.jsx";
-import Message from "../components/Message";
+import Message from "../components/Message.jsx";
 import axios from "axios";
-import { useUserData } from "../context/userContext";
+import { useUserData } from "../context/userContext.jsx";
 import { socket } from "../utils/socket.js";
 import UserCard from "../components/UserCard.jsx";
-import Header from "../components/Header.jsx";
-
-const initialState = {
-  users: [],
-  chats: [],
-  room: null,
-  messages: [],
-  messageText: "",
-  isNewChats: false,
-  notifications: {},
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "SET_USERS":
-      return { ...state, users: action.payload };
-    case "SET_CHATS":
-      return { ...state, chats: action.payload };
-    case "SET_ROOM":
-      return { ...state, room: action.payload };
-    case "SET_MESSAGES":
-      return {
-        ...state,
-        messages:
-          typeof action.payload === "function"
-            ? action.payload(state.messages)
-            : action.payload,
-      };
-    case "SET_MESSAGE_TEXT":
-      return { ...state, messageText: action.payload };
-    case "SET_IS_NEW_CHATS":
-      return { ...state, isNewChats: action.payload };
-    case "SET_NOTIFICATIONS":
-      return { ...state, notifications: action.payload };
-    default:
-      return state;
-  }
-};
+import {chatReducer, initialState} from "../reducers/chatReducer.js";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const { userData } = useUserData();
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [state, dispatch] = useReducer(chatReducer, initialState);
   const [messageText, setMessageText] = useState("");
 
   useEffect(() => {
@@ -62,7 +24,7 @@ const MainPage = () => {
       .catch((error) => {
         navigate("/login");
       });
-
+      
     axios
       .get(`rooms/${userData._id}`)
       .then((res) => {
