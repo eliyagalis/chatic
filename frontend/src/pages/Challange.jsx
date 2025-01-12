@@ -3,8 +3,25 @@ import "../styles/challange.css";
 import axios from "axios";
 import Timer from "../components/Timer";
 import ChallengeResult from "../components/ChallengeResult";
+import { socket } from "../utils/socket.js";
+import { chatReducer, initialState } from "../reducers/chatReducer.js";
+import { Link, useNavigate } from "react-router";
+import { useUserData } from "../context/userContext";
 
 const Challange = () => {
+  const navigate = useNavigate();
+  const { userData } = useUserData();
+
+  useEffect(() => {
+    axios
+      .post("users/verifyToken", null, {
+        withCredentials: true,
+      })
+      .then((res) => {})
+      .catch((error) => {
+        navigate("/login");
+    }); 
+  }, [])
 
   const letters = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -24,7 +41,7 @@ const Challange = () => {
         exists: false,
       }))
     ));
-
+  
   const keyboardHandler = (value) => {
     if (currentRow < tempWord.length) {
       const updatedWord = [...tempWord];
@@ -53,7 +70,6 @@ const Challange = () => {
           break;
         }
       }
-
       updatedWord[currentRow] = row;
       setTempWord(updatedWord);
     }
@@ -105,7 +121,7 @@ const Challange = () => {
             setCurrentRow((prev) => prev + 1);}
       })
       .catch((error) => {
-            setErrors(error.response.data.error);
+            setErrors(error.response.data.error || "Unexpected error");
 
             setTimeout(() => {
                 setErrors("");
@@ -118,11 +134,11 @@ const Challange = () => {
       <div className={errors ? "errors" : "errors-hidden"}>{errors}</div>
         <div className="challenge-title">WORDCODE</div>
         <div className="challenge-header">
-        <button className="send-btn">Back to the chat</button>
+        <Link to={"/chat"} className="send-btn">Back to the chat</Link>
         </div>
         
       <div className="display">
-      
+      {userData.username}
         <Timer />
         {tempWord.map((row, rowIndex) => (
           <div className="display-row" key={rowIndex}>
@@ -164,6 +180,7 @@ const Challange = () => {
             </div>
           ))}
         </div>
+        
       </div>
     { gameStatus && (<div className="overlay"/>)}
     { gameStatus === "success" && (<ChallengeResult resultArray={tempWord} />)}

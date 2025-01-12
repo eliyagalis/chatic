@@ -27,7 +27,7 @@ html, body {
 }
 
 .panel-top-bar {
-    height: 20%;
+    height: 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -253,6 +253,37 @@ html, body {
 .user-card:hover {
     background-color: var(--light-gold);
     cursor: pointer;
+}
+
+.notifications {
+    background-color: rgb(0, 197, 0);
+    width: 1.5rem;
+    height: 1.5rem;
+    text-align: center;
+    color: var(--light-white);
+    border-radius: 1rem;
+    transform: scale(1);
+    animation: newNotifications .2s ease-in nullNotifications .2s ease-out;
+}
+
+@keyframes newNotifications {
+    from {
+        transform: scale(.3);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes nullNoifications {
+    from {
+        transform: scale(1);
+
+    }
+    to {
+        transform: scale(.3);
+
+    }
 }
 
 @media (max-width: 1024px) {

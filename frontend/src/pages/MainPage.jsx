@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/main.css";
 import RoomCard from "../components/RoomCard.jsx";
 import Message from "../components/Message.jsx";
@@ -8,6 +8,7 @@ import { useUserData } from "../context/userContext.jsx";
 import { socket } from "../utils/socket.js";
 import UserCard from "../components/UserCard.jsx";
 import { chatReducer, initialState } from "../reducers/chatReducer.js";
+import ChatPanel from "../components/ChatPanel.jsx";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const MainPage = () => {
         );
       })
       .catch((error) => console.log(error));
-  }, [state.chats]);
+  }, [state.room]);
 
   const logout = (e) => {
     e.preventDefault();
@@ -59,25 +60,27 @@ const MainPage = () => {
     dispatch({ type: "SET_IS_NEW_CHATS", payload: true });
   };
 
-  const openChatHandler = (chatUser) => {
-    const participants = [userData._id, chatUser._id];
-
-    axios
-      .post("/rooms", participants)
-      .then((res) => {
-        dispatch({ type: "SET_ROOM", payload: res.data });
-        socket.emit("JoinRoom", res.data._id);
-      })
-      .catch((error) => {
-        console.log(error);
-        return;
-      });
-
-    axios
-      .get(`/rooms/${state.room._id}`)
-      .then((res) => dispatch({ type: "SET_MESSAGES", payload: res.data }))
-      .catch((error) => console.log(error));
-  };
+  const openChatHandler = async (chatUser) => {
+    try {
+      const participants = [userData._id, chatUser._id];
+      const roomResponse = await axios.post("/rooms", participants);
+      const room = roomResponse.data;
+  
+      dispatch({ type: "SET_ROOM", payload: room });
+  
+      socket.emit("JoinRoom", room._id);
+      const prevNotifications = {...state.notifications};
+      if (prevNotifications[room._id] > 0) {
+        prevNotifications[room._id] = 0;
+        dispatch({ type: "SET_NOTIFICATIONS", payload: prevNotifications });
+      }
+      const messagesResponse = await axios.get(`/rooms/${room._id}`);
+      dispatch({ type: "SET_MESSAGES", payload: messagesResponse.data });
+  
+    } catch (error) {
+      console.error("Error in openChatHandler:", error);
+    }
+  };  
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -88,6 +91,7 @@ const MainPage = () => {
       _id: state.messages.length + 1,
       senderId: userData._id,
       content: messageText,
+      sentAt: new Date().toISOString()
     };
 
     axios
@@ -97,55 +101,45 @@ const MainPage = () => {
         setMessageText("");
       })
       .catch((error) => console.log(error));
-
-    
   };
+useEffect(() => {
+  socket.on("ReceiveMessage", ({ room, messageObject }) => {
+    if (!state.room || room !== state.room._id) {
+      console.log(state.notifications);
+      dispatch({
+        type: "SET_NOTIFICATIONS",
+        payload: {
+          ...state.notifications,
+          [room]: ((state.notifications[room] || 0) + 1),
+        },
+      });
+    } else {
 
-  useEffect(() => {
-    socket.on("ReceiveMessage", ({ room, messageObject }) => {
-      if (!state.room || room !== state.room._id) {
-        dispatch({
-          type: "SET_NOTIFICATIONS",
-          payload: {
-            ...state.notifications,
-            [room]: (state.notifications[room] || 0) + 1,
-          },
-        });
-      } else {
-        dispatch({
-          type: "SET_MESSAGES",
-          payload: (prevMessages) => [...prevMessages, messageObject],
-        });
-      }
-    });
+      dispatch({
+        type: "SET_MESSAGES",
+        payload: (prevMessages) => [...prevMessages, messageObject],
+      });
+    }
+  });
 
-    return () => {
-      socket.off("ReceiveMessage");
-    };
-  }, [state.room]);
+  return () => {
+    socket.off("ReceiveMessage");
+  };
+}, [state.room]);
 
   return (
     <div className="main page">
       {state.isNewChats && (
-        <div
-          className="find-users-background"
-          onClick={() =>
-            dispatch({ type: "SET_IS_NEW_CHATS", payload: !state.isNewChats })
-          }
-        >
+        <div className="find-users-background"
+          onClick={() => dispatch({ type: "SET_IS_NEW_CHATS", payload: !state.isNewChats })}>
+
           <div className="find-users-panel">
             <div className="title">Start a new conversation</div>
-            {state.users.map(
-              (u) =>
+            {state.users.map((u) =>
                 u._id !== userData._id && (
-                  <UserCard
-                    key={u._id}
-                    _id={u._id}
-                    username={u.username}
-                    openChatHandler={openChatHandler}
-                  />
-                )
-            )}
+                  <UserCard key={u._id} _id={u._id}
+                    username={u.username} openChatHandler={openChatHandler}/>
+                ))}
           </div>
         </div>
       )}
@@ -167,7 +161,7 @@ const MainPage = () => {
                 {state.room.participantsUsernames.find(
                   (username) => username !== userData.username
                 )}
-                <button className="send-btn">Challange</button>
+                <Link to={"/challange"} className="send-btn">Challange</Link>
               </div>
             )}
           </div>
@@ -182,6 +176,7 @@ const MainPage = () => {
                   username={u.participantsUsernames.find(
                     (username) => username !== userData.username
                   )}
+                  notifications={state.notifications[u._id] || 0}
                   isActive={state.room ? state.room._id === u._id : null}
                   openChatHandler={openChatHandler}
                 />
@@ -199,7 +194,7 @@ const MainPage = () => {
                     key={m._id}
                     isSent={m.senderId === userData._id}
                     content={m.content}
-                    time={m.time}
+                    time={m.sentAt}
                   />
                 ))}
               </div>
@@ -219,7 +214,7 @@ const MainPage = () => {
                 </form>
               </div>
             </div>
-          ) : (
+      ) : (
             <div className="chat-panel">
               <div className="blank-chat"></div>
             </div>

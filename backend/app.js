@@ -33,6 +33,10 @@ io.on("connection", (socket) => {
   socket.on("SendMessage", (room, messageObject) => {
     io.to(room).emit("ReceiveMessage", { room, messageObject });
   });
+
+  socket.on("SendGameProgress", (room, process) => {
+    io.to(room).emit("ReceiveProgress", {room, process});
+  })
 });
 
 app.use("/api/v1/users", userRouter);
